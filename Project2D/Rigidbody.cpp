@@ -2,7 +2,10 @@
 #pragma region
 Rigidbody::Rigidbody(ShapeType shapeId, glm::vec2 position, glm::vec2 velocity, float orientation, float mass)
 {
-
+	m_position = position;
+	m_velocity = velocity;
+	m_orientation = orientation;
+	m_mass = mass;
 }
 
 Rigidbody::~Rigidbody()
@@ -25,7 +28,5 @@ void Rigidbody::applyForce(glm::vec2 force)
 void Rigidbody::applyForceToOther(Rigidbody* other, glm::vec2 force)
 {
 	other->applyForce(force);
-
-
 }
 #pragma endregion
