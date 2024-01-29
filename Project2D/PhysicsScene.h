@@ -2,6 +2,8 @@
 #include "PhysicsObject.h"
 #include "glm/glm.hpp"
 #include "vector"
+
+
 class PhysicsScene
 {
 public:
@@ -14,12 +16,12 @@ public:
 	void Update(float deltaTime);
 	void Draw();
 
-
+	void setTimeStep(const float timeStep) { m_timeStep = timeStep; };
+	float getTimeStep() const { return m_timeStep; };
 
 protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
 	std::vector<PhysicsObject*> m_physicsObjects;
-
 };
 
