@@ -2,6 +2,7 @@
 #include "PhysicsObject.h"
 #include "Sphere.h"
 #include "Rigidbody.h"
+#include "Plane.h"
 #include "glm/glm.hpp"
 #include "vector"
 #include <cmath>
@@ -24,7 +25,12 @@ public:
 	void setTimeStep(const float timeStep) { m_timeStep = timeStep; };
 	float getTimeStep() const { return m_timeStep; };
 
+	void checkCollisions();
+
 	static bool sphere2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool sphere2Plane(PhysicsObject*, PhysicsObject*);
+	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
+	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);
 
 protected:
 	glm::vec2 m_gravity;

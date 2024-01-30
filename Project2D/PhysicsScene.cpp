@@ -1,6 +1,14 @@
 #include "PhysicsScene.h"
+
+typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
+
+static fn collisionFunctions[] = {
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere,
+	PhysicsScene::sphere2Plane,	PhysicsScene::sphere2Sphere,
+};
+
 #pragma region Constructors
-PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0,0))
+PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
 {
 }
 PhysicsScene::~PhysicsScene() {
@@ -34,17 +42,8 @@ void PhysicsScene::Update(float deltaTime) {
 			pObject->FixedUpdate(m_gravity, m_timeStep);
 		}
 		accumulatedTime -= m_timeStep;
-		// check for collisions
-		int objectcount = m_physicsObjects.size();
-		for (int x = 0; x < objectcount - 1; x++) {
-			for (int y = x + 1; y < objectcount; y++) {
-				PhysicsObject* object1 = m_physicsObjects[x];
-				PhysicsObject* object2 = m_physicsObjects[y];
 
-				// TEMPORARY COLLISION BECAUSE ONLY HAVE SPHERES
-				sphere2Sphere(object1, object2);
-			}
-		}
+		checkCollisions();
 	}
 
 }
@@ -56,6 +55,27 @@ void PhysicsScene::Draw() {
 }
 #pragma endregion
 #pragma region CollisionHandling
+
+void PhysicsScene::checkCollisions() {
+	// check for collisions
+	int objectcount = m_physicsObjects.size();
+	for (int x = 0; x < objectcount - 1; x++) {
+		for (int y = x + 1; y < objectcount; y++) {
+			PhysicsObject* object1 = m_physicsObjects[x];
+			PhysicsObject* object2 = m_physicsObjects[y];
+
+			int id1 = object1->getShapeID();
+			int id2 = object2->getShapeID();
+			// choose the function via pointer
+			int funcIdx = (id1 * SHAPE_COUNT) + id2;
+			fn collisionFunction = collisionFunctions[funcIdx];
+			if (collisionFunction != nullptr) { // if collision function points to an actual function
+				collisionFunction(object1, object2);
+			}
+		}
+	}
+}
+
 bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	Sphere* sphere1 = dynamic_cast<Sphere*>(obj1);
@@ -67,13 +87,47 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		float yDist = fabsf(sphere1->getPosition().y - sphere2->getPosition().y);
 
 		float distance = sqrtf(powf(xDist, 2) + powf(yDist, 2));
-		if (distance <= requiredDistance) {
-			sphere1->Stop();
-			sphere2->Stop();
-		}
+		glm::vec2 force1 = sphere1->getVelocity();
+		glm::vec2 force2 = sphere2->getVelocity();
 
+		if (distance <= requiredDistance) {
+			return true;
+		}
 	}
-	
 	return false;
 }
+bool PhysicsScene::sphere2Plane(PhysicsObject* sphereOBJ, PhysicsObject* planeOBJ)
+{
+	Sphere* sphere = dynamic_cast<Sphere*>(sphereOBJ);
+	Plane* plane = dynamic_cast<Plane*>(planeOBJ);
+	if (sphere != nullptr && plane != nullptr) {
+		glm::vec2 collisionNormal = plane->getNormal();
+		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
+
+		float intersection = sphere->getRadius() - sphereToPlane;
+		float velocityOutOfPlane = glm::dot(sphere->getPosition(), plane->getNormal() - plane->getDistance());
+
+		if (intersection >= 0 && velocityOutOfPlane < 0) {
+			sphere->applyForce(-sphere->getVelocity() * sphere->getMass());
+			return true;
+		}
+	}
+
+	return false; // objects invalid
+}
+
+/// <summary>
+/// Planes cannot collide
+/// </summary>
+/// <returns> false </returns>
+bool PhysicsScene::plane2Plane(PhysicsObject* plane1, PhysicsObject* plane2)
+{
+	return false;
+}
+
+bool PhysicsScene::plane2Sphere(PhysicsObject* plane, PhysicsObject* sphere)
+{
+	return sphere2Plane(sphere, plane);
+}
+
 #pragma endregion

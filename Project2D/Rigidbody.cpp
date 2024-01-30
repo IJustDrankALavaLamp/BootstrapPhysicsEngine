@@ -18,7 +18,6 @@ void Rigidbody::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	m_position += m_velocity * timeStep;
 	applyForce(gravity * m_mass * timeStep);
-
 }
 #pragma region
 void Rigidbody::applyForce(glm::vec2 force)

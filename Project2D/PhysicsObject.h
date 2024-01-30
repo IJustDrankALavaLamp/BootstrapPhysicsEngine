@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "Gizmos.h"
 
-enum ShapeType { PLANE = 0, SPHERE, BOX };
+enum ShapeType { PLANE = 0, SPHERE, SHAPE_COUNT };
 class PhysicsObject
 {
 protected:
@@ -13,6 +13,7 @@ public:
 	virtual void Draw() = 0;
 	virtual void resetPosition() {};
 	
+	virtual int getShapeID() { return m_shapeID; }
 protected:
 	ShapeType m_shapeID;
 
