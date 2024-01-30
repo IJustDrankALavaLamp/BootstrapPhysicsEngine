@@ -6,7 +6,7 @@ public:
 	Rigidbody(ShapeType shapeId, glm::vec2 position, glm::vec2 velocity, float orientation, float mass);
 	~Rigidbody();
 
-	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
+	virtual void FixedUpdate(glm::vec2 gravity, float timeStep);
 	void applyForce(glm::vec2 force);
 	void applyForceToOther(Rigidbody* other, glm::vec2 force);
 
@@ -14,7 +14,7 @@ public:
 	float getOrientation() { return m_orientation; }
 	glm::vec2 getVelocity() { return m_velocity; }
 	float getMass() { return m_mass; }
-
+	void Stop() { m_velocity = { 0,0 }; }
 protected:
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;
