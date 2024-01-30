@@ -10,11 +10,14 @@ public:
 	void applyForce(glm::vec2 force);
 	void applyForceToOther(Rigidbody* other, glm::vec2 force);
 
+	void resolveCollision(Rigidbody* other);
+
 	glm::vec2 getPosition() { return m_position; }
 	float getOrientation() { return m_orientation; }
 	glm::vec2 getVelocity() { return m_velocity; }
 	float getMass() { return m_mass; }
 	void Stop() { m_velocity = { 0,0 }; }
+
 protected:
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;

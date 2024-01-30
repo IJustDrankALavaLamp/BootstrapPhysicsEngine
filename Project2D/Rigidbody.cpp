@@ -19,7 +19,22 @@ void Rigidbody::FixedUpdate(glm::vec2 gravity, float timeStep)
 	m_position += m_velocity * timeStep;
 	applyForce(gravity * m_mass * timeStep);
 }
-#pragma region
+#pragma region Forces
+void Rigidbody::resolveCollision(Rigidbody* other) {
+	glm::vec2 normal = glm::normalize(other->getPosition() - m_position); // the normal of the plane the collision occurs on
+	glm::vec2 relativeVelocity = other->getVelocity() - m_velocity; // the difference between velocity
+
+	if (glm::dot(normal, relativeVelocity) >= 0)
+		return; //objects are already moving apart
+
+	float elasticity = 1;
+	float j;
+
+	glm::vec2 force = normal * j;
+
+	applyForceToOther(other, force);
+}
+
 void Rigidbody::applyForce(glm::vec2 force)
 {
 	m_velocity += force / m_mass;
