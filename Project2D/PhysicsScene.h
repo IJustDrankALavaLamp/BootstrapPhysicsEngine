@@ -32,6 +32,7 @@ public:
 	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
 	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);
 
+
 protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;

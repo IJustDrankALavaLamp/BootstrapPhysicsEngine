@@ -75,27 +75,37 @@ void PhysicsScene::checkCollisions() {
 		}
 	}
 }
-
+/// <summary>
+/// handles collision of two spheres hitting each other
+/// </summary>
+/// <param name="sphere1"></param>
+/// <param name="sphere2"></param>
+/// <returns>true if there is a collision, false if there isn't</returns>
 bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	Sphere* sphere1 = dynamic_cast<Sphere*>(obj1);
 	Sphere* sphere2 = dynamic_cast<Sphere*>(obj2);
 
-	if (sphere1 != nullptr && sphere2 != nullptr) {
+	if (sphere1 != nullptr && sphere2 != nullptr) { // double check if both items worked
 		float requiredDistance = sphere1->getRadius() + sphere2->getRadius(); // the minimum distance between to not collide
 		float xDist = fabsf(sphere1->getPosition().x - sphere2->getPosition().x);
 		float yDist = fabsf(sphere1->getPosition().y - sphere2->getPosition().y);
 
 		float distance = sqrtf(powf(xDist, 2) + powf(yDist, 2));
-		glm::vec2 force1 = sphere1->getVelocity();
-		glm::vec2 force2 = sphere2->getVelocity();
 
 		if (distance <= requiredDistance) {
+			sphere1->resolveCollision(sphere2);
 			return true;
 		}
 	}
 	return false;
 }
+/// <summary>
+/// handles collision of a sphere hitting a plane
+/// </summary>
+/// <param name="sphereOBJ"></param>
+/// <param name="planeOBJ"></param>
+/// <returns></returns>
 bool PhysicsScene::sphere2Plane(PhysicsObject* sphereOBJ, PhysicsObject* planeOBJ)
 {
 	Sphere* sphere = dynamic_cast<Sphere*>(sphereOBJ);
@@ -105,10 +115,10 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* sphereOBJ, PhysicsObject* planeOB
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
 
 		float intersection = sphere->getRadius() - sphereToPlane;
-		float velocityOutOfPlane = glm::dot(sphere->getPosition(), plane->getNormal() - plane->getDistance());
+		float velocityOutOfPlane = glm::dot(sphere->getVelocity(), plane->getNormal());
 
 		if (intersection >= 0 && velocityOutOfPlane < 0) {
-			sphere->applyForce(-sphere->getVelocity() * sphere->getMass());
+			plane->resolveCollision((Rigidbody*)sphereOBJ);
 			return true;
 		}
 	}
@@ -124,10 +134,14 @@ bool PhysicsScene::plane2Plane(PhysicsObject* plane1, PhysicsObject* plane2)
 {
 	return false;
 }
-
+/// <summary>
+/// calls sphere 2 plane
+/// </summary>
+/// <param name="plane"></param>
+/// <param name="sphere"></param>
+/// <returns></returns>
 bool PhysicsScene::plane2Sphere(PhysicsObject* plane, PhysicsObject* sphere)
 {
 	return sphere2Plane(sphere, plane);
 }
-
 #pragma endregion

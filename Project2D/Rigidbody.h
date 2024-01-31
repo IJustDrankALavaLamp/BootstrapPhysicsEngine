@@ -1,5 +1,6 @@
 #pragma once
 #include "PhysicsObject.h"
+#include <iostream>
 class Rigidbody : public PhysicsObject
 {
 public:
@@ -18,6 +19,7 @@ public:
 	float getMass() { return m_mass; }
 	void Stop() { m_velocity = { 0,0 }; }
 
+	float getKineticEnergy();
 protected:
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;
