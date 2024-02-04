@@ -1,7 +1,7 @@
 #include "Application2D.h"
 
 int main() {
-	
+	// this is a test line
 	// allocation
 	auto app = new Application2D();
 
