@@ -92,9 +92,9 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		float yDist = fabsf(sphere1->getPosition().y - sphere2->getPosition().y);
 
 		float distance = sqrtf(powf(xDist, 2) + powf(yDist, 2));
-
+		
 		if (distance <= requiredDistance) {
-			sphere1->resolveCollision(sphere2);
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			return true;
 		}
 	}
@@ -116,9 +116,10 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* sphereOBJ, PhysicsObject* planeOB
 
 		float intersection = sphere->getRadius() - sphereToPlane;
 		float velocityOutOfPlane = glm::dot(sphere->getVelocity(), plane->getNormal());
-
-		if (intersection >= 0 && velocityOutOfPlane < 0) {
-			plane->resolveCollision((Rigidbody*)sphereOBJ);
+		glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
+		if (intersection >= 0 && velocityOutOfPlane < 0)
+		{
+			plane->resolveCollision((Rigidbody*)sphereOBJ, contact);
 			return true;
 		}
 	}

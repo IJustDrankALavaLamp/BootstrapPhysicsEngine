@@ -42,7 +42,7 @@ void Plane::resetPosition()
 {
 }
 
-void Plane::resolveCollision(Rigidbody* other)
+void Plane::resolveCollision(Rigidbody* other, glm::vec2 contact)
 {
 	glm::vec2 relativeVelocity = other->getVelocity(); // the difference between velocity
 
@@ -55,5 +55,5 @@ void Plane::resolveCollision(Rigidbody* other)
 
 	glm::vec2 force = m_normal * j;
 
-	other->applyForce(force);
+	other->applyForce(force, contact - other->getPosition());
 }

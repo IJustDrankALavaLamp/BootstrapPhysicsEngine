@@ -23,15 +23,17 @@ bool Application2D::startup() {
 	m_physicsScene->setGravity(glm::vec2(0,-9.81));
 	m_physicsScene->setTimeStep(0.01f);
 	// initialize objects
-	Sphere* ball1 = new Sphere(glm::vec2(-40, 10), glm::vec2(-15, 0), 3.0f, 5, glm::vec4(1, 0, 0, 1));
-	//Sphere* ball2 = new Sphere(glm::vec2(40, 10), glm::vec2(-15, 0), 3.0f, 5, glm::vec4(0, 0, 1, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(-40, 10), glm::vec2(-15, 0), 30.0f, 5, glm::vec4(1, 0, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(40, 10), glm::vec2(-15, 0), 30.0f, 5, glm::vec4(0, 0, 1, 1));
+	Sphere* ball3 = new Sphere(glm::vec2(0, 10), glm::vec2(0, 0), 30.0f, 5, glm::vec4(0, 1, 1, 1));
 	Plane* plane = new Plane(glm::vec2(0,1), -30);
 	Plane* plane2 = new Plane(glm::vec2(5, 1), -50);
 	Plane* plane3 = new Plane(glm::vec2(-5, 1), -50);
 
 	// add objects to scene
 	m_physicsScene->addPhysicsObject(ball1);
-	//m_physicsScene->addPhysicsObject(ball2);
+	m_physicsScene->addPhysicsObject(ball2);
+	m_physicsScene->addPhysicsObject(ball3);
 	m_physicsScene->addPhysicsObject(plane);
 	m_physicsScene->addPhysicsObject(plane2);
 	m_physicsScene->addPhysicsObject(plane3);

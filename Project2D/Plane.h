@@ -13,7 +13,7 @@ public:
 	virtual void Draw();
 	virtual void resetPosition();
 
-	void resolveCollision(Rigidbody* other);
+	void resolveCollision(Rigidbody* other, glm::vec2 contact);
 
 	glm::vec2 getNormal() { return m_normal; }
 	float getDistance() { return m_distanceToOrigin; }
