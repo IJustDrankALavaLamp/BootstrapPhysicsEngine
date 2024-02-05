@@ -153,41 +153,28 @@ bool PhysicsScene::plane2Sphere(PhysicsObject* plane, PhysicsObject* sphere)
 	return sphere2Plane(sphere, plane);
 }
 bool PhysicsScene::plane2Box(PhysicsObject* planeObj, PhysicsObject* boxObj) {
-	return box2Plane(boxObj, planeObj);
-}
-#pragma endregion
-#pragma region BoxCollisions
-bool PhysicsScene::box2Box(PhysicsObject* box1, PhysicsObject* box2) {
-
-	return false;
-}
-bool PhysicsScene::box2Sphere(PhysicsObject* box, PhysicsObject* sphere) {
-
-	return false;
-}
-bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
 	Box* box = dynamic_cast<Box*>(boxObj);
 	Plane* plane = dynamic_cast<Plane*>(planeObj);
 
 	if (box != nullptr && plane != nullptr) // check objects exist
 	{
 		int numContacts = 0;
-		glm::vec2 contact(0, 0);
+		vec2 contact(0, 0);
 		float contactV = 0;
 
 		//get point on the plane
-		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
+		vec2 planeOrigin = plane->getNormal() * plane->getDistance();
 
 		for (float x = -box->getExtents().y; x < box->getWidth(); x += box->getWidth())
 		{
 			for (float y = -box->getExtents().y; y < box->getHeight(); y += box->getHeight()) {
-				glm::vec2 point = box->getPosition() + x * box->getLocalX() + y * box->getLocalY();
-				float distFromPlane = glm::dot(point - planeOrigin, plane->getNormal());
+				vec2 point = box->getPosition() + x * box->getLocalX() + y * box->getLocalY();
+				float distFromPlane = dot(point - planeOrigin, plane->getNormal());
 
-				glm::vec2 displacement = x * box->getLocalX() + y * box->getLocalY();
-				glm::vec2 pointVel = box->getVelocity() + -box->getAngularVel() * glm::vec2(-displacement.y, displacement.x);
+				vec2 displacement = x * box->getLocalX() + y * box->getLocalY();
+				vec2 pointVel = box->getVelocity() + -box->getAngularVel() * vec2(-displacement.y, displacement.x);
 
-				float velocityIntoPlane = glm::dot(pointVel, plane->getNormal());
+				float velocityIntoPlane = dot(pointVel, plane->getNormal());
 
 				if (distFromPlane < 0 && velocityIntoPlane <= 0) {
 					numContacts++;
@@ -201,8 +188,26 @@ bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
 			}
 		}
 	}
+	return false;
+}
+#pragma endregion
+#pragma region BoxCollisions
+bool PhysicsScene::box2Box(PhysicsObject* box1, PhysicsObject* box2) {
 
 	return false;
+}
+bool PhysicsScene::box2Sphere(PhysicsObject* box, PhysicsObject* sphere) {
+
+	Box* box = dynamic_cast<Box*>(box);
+	Sphere* sphere = dynamic_cast<Sphere*>(sphere);
+
+	if (box != nullptr && sphere != nullptr) {
+
+	}
+
+}
+bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
+	return plane2Box(planeObj, boxObj);
 }
 
 #pragma endregion

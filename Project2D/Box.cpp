@@ -3,19 +3,24 @@
 Box::Box(glm::vec2 pos, glm::vec2 velocity, glm::vec2 extents, float orientation, float mass, glm::vec4 colour)
 	: Rigidbody(BOX, pos, velocity, orientation, mass)
 {
+	m_localX = vec2(0, 0);
+	m_localY = vec2(0, 0);
+
 	m_extents = extents;
 	m_colour = colour;
+
+	m_moment = 1.0f / 12.0f * mass * getWidth() * getHeight();
 }
 
 void Box::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	Rigidbody::FixedUpdate(gravity, timeStep);
-
 	// store local axes
 	float cs = cosf(m_orientation);
 	float sn = sinf(m_orientation);
-	m_localX = glm::normalize(glm::vec2(cs,sn));
+	m_localX = glm::normalize(glm::vec2(cs, sn));
 	m_localY = glm::normalize(glm::vec2(-sn, cs));
+
 }
 
 void Box::Draw() {

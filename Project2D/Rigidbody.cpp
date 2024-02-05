@@ -52,6 +52,7 @@ void Rigidbody::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2*
 void Rigidbody::applyForce(glm::vec2 force, glm::vec2 pos)
 {
 	m_velocity += force / m_mass;
+	m_angularVelocity += (force.y * pos.x - force.x * pos.y) / getMoment();
 }
 
 void Rigidbody::applyForceToOther(Rigidbody* other, glm::vec2 force, glm::vec2 pos)

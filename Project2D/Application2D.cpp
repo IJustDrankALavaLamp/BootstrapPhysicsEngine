@@ -31,7 +31,7 @@ bool Application2D::startup() {
 	Plane* plane2 = new Plane(glm::vec2(5, 1), -50);
 	Plane* plane3 = new Plane(glm::vec2(-5, 1), -50);
 
-	Box* box = new Box(glm::vec2(10, 10), glm::vec2(0,0), glm::vec2(5, 5), 0, 3.0f, glm::vec4(1,1,0,1));
+	Box* box = new Box(glm::vec2(10, 5), glm::vec2(50,10), glm::vec2(5, 5), 2, 3.0f, glm::vec4(1,1,0,1));
 
 	// add objects to scene
 	m_physicsScene->addPhysicsObject(ball1);

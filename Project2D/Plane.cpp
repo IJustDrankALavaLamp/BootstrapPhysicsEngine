@@ -1,5 +1,4 @@
 #include "Plane.h"
-using namespace glm;
 
 Plane::Plane(glm::vec2 normal, float dTT) : PhysicsObject(ShapeType::PLANE){
 	m_distanceToOrigin = dTT;
@@ -42,18 +41,30 @@ void Plane::resetPosition()
 {
 }
 
-void Plane::resolveCollision(Rigidbody* other, glm::vec2 contact)
+void Plane::resolveCollision(Rigidbody* other, vec2 contact)
 {
-	glm::vec2 relativeVelocity = other->getVelocity(); // the difference between velocity
+	// point where force is applied from
+	vec2 localContact = contact - other->getPosition();
 
-	if (glm::dot(m_normal, relativeVelocity) >= 0)
-		return; //objects are already moving apart
+	// relitive velocity is just the other objects velocity at the contact point
+	// the plane has no velocity
+	vec2 relVel = other->getVelocity() + other->getAngularVel() * vec2(-localContact.y, localContact.x); // the difference between velocity
+	float velIntoPlane = dot(relVel, m_normal);
 
-	float elasticity = 1;
-	float j = glm::dot(-(1 + elasticity) * (relativeVelocity), m_normal) /
-		((1 / other->getMass()));
+	if (dot(m_normal, relVel) >= 0)
+		return;
 
-	glm::vec2 force = m_normal * j;
+	float e = 1;
+	float r = dot(localContact, vec2(m_normal.y, -m_normal.x));
+	float mass0 = 1.0f / (1.0f / other->getMass() + (r * r) / other->getMoment());
+	float j = -(1 + e) * velIntoPlane * mass0;
 
-	other->applyForce(force, contact - other->getPosition());
+	vec2 force = m_normal * j;
+	float preKE = other->getKineticEnergy();
+	other->applyForce(force, localContact);
+	float postKE = other->getKineticEnergy();
+
+	float finalKE = postKE - preKE;
+	if (finalKE > postKE * 0.01f)
+		std::cout << "Kinetic Energy lost" << std::endl;
 }

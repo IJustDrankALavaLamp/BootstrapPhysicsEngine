@@ -14,18 +14,19 @@ public:
 	void resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 
 #pragma region Getters
-	glm::vec2 getPosition() { return m_position; }
+	vec2 getPosition() { return m_position; }
 	float getOrientation() { return m_orientation; }
-	glm::vec2 getVelocity() { return m_velocity; }
+	vec2 getVelocity() { return m_velocity; }
 	float getAngularVel() { return m_angularVelocity; };
 	float getMass() { return m_mass; }
+	float getMoment() { return m_moment; }
 #pragma endregion
 	void Stop() { m_velocity = { 0,0 }; }
 
 	float getKineticEnergy();
 protected:
-	glm::vec2 m_position;
-	glm::vec2 m_velocity;
+	vec2 m_position;
+	vec2 m_velocity;
 	float m_mass;
 	float m_orientation; // 2D so only need rotation on one angle
 	float m_angularVelocity;
