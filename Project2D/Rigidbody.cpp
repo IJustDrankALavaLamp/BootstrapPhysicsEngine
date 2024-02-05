@@ -5,7 +5,8 @@ Rigidbody::Rigidbody(ShapeType shapeId, glm::vec2 position, glm::vec2 velocity, 
 {
 	m_position = position;
 	m_velocity = velocity;
-	m_orientation = orientation;
+	m_orientation = orientation; 
+	m_angularVelocity = 0;
 	m_mass = mass;
 }
 
@@ -17,7 +18,7 @@ Rigidbody::~Rigidbody()
 void Rigidbody::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	m_position += m_velocity * timeStep;
-	applyForce(gravity * m_mass * timeStep, m_position);
+	applyForce(gravity * m_mass * timeStep, glm::vec2(0, 0));
 
 	m_orientation += m_angularVelocity * timeStep;
 }
