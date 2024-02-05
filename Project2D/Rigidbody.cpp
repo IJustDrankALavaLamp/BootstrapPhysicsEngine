@@ -8,6 +8,7 @@ Rigidbody::Rigidbody(ShapeType shapeId, glm::vec2 position, glm::vec2 velocity, 
 	m_orientation = orientation; 
 	m_angularVelocity = 0;
 	m_mass = mass;
+	m_moment = 0;
 }
 
 Rigidbody::~Rigidbody()

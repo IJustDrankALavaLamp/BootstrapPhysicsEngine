@@ -13,10 +13,13 @@ public:
 
 	void resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 
+#pragma region Getters
 	glm::vec2 getPosition() { return m_position; }
 	float getOrientation() { return m_orientation; }
 	glm::vec2 getVelocity() { return m_velocity; }
+	float getAngularVel() { return m_angularVelocity; };
 	float getMass() { return m_mass; }
+#pragma endregion
 	void Stop() { m_velocity = { 0,0 }; }
 
 	float getKineticEnergy();

@@ -3,8 +3,9 @@
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctions[] = {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere,
-	PhysicsScene::sphere2Plane,	PhysicsScene::sphere2Sphere,
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box,
+	PhysicsScene::sphere2Plane,	PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,
+	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box
 };
 
 #pragma region Constructors
@@ -75,6 +76,8 @@ void PhysicsScene::checkCollisions() {
 		}
 	}
 }
+
+#pragma region SphereCollisions
 /// <summary>
 /// handles collision of two spheres hitting each other
 /// </summary>
@@ -126,7 +129,11 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* sphereOBJ, PhysicsObject* planeOB
 
 	return false; // objects invalid
 }
-
+bool PhysicsScene::sphere2Box(PhysicsObject* sphereObj, PhysicsObject* boxObj) {
+	return box2Sphere(boxObj, sphereObj);
+}
+#pragma endregion
+#pragma region PlaneCollisions
 /// <summary>
 /// Planes cannot collide
 /// </summary>
@@ -145,4 +152,59 @@ bool PhysicsScene::plane2Sphere(PhysicsObject* plane, PhysicsObject* sphere)
 {
 	return sphere2Plane(sphere, plane);
 }
+bool PhysicsScene::plane2Box(PhysicsObject* planeObj, PhysicsObject* boxObj) {
+	return box2Plane(boxObj, planeObj);
+}
+#pragma endregion
+#pragma region BoxCollisions
+bool PhysicsScene::box2Box(PhysicsObject* box1, PhysicsObject* box2) {
+
+	return false;
+}
+bool PhysicsScene::box2Sphere(PhysicsObject* box, PhysicsObject* sphere) {
+
+	return false;
+}
+bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
+	Box* box = dynamic_cast<Box*>(boxObj);
+	Plane* plane = dynamic_cast<Plane*>(planeObj);
+
+	if (box != nullptr && plane != nullptr) // check objects exist
+	{
+		int numContacts = 0;
+		glm::vec2 contact(0, 0);
+		float contactV = 0;
+
+		//get point on the plane
+		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
+
+		for (float x = -box->getExtents().y; x < box->getWidth(); x += box->getWidth())
+		{
+			for (float y = -box->getExtents().y; y < box->getHeight(); y += box->getHeight()) {
+				glm::vec2 point = box->getPosition() + x * box->getLocalX() + y * box->getLocalY();
+				float distFromPlane = glm::dot(point - planeOrigin, plane->getNormal());
+
+				glm::vec2 displacement = x * box->getLocalX() + y * box->getLocalY();
+				glm::vec2 pointVel = box->getVelocity() + -box->getAngularVel() * glm::vec2(-displacement.y, displacement.x);
+
+				float velocityIntoPlane = glm::dot(pointVel, plane->getNormal());
+
+				if (distFromPlane < 0 && velocityIntoPlane <= 0) {
+					numContacts++;
+					contact += point;
+					contactV += velocityIntoPlane;
+				}
+			}
+			if (numContacts > 0) {
+				plane->resolveCollision(box, contact / (float)numContacts);
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+#pragma endregion
+
 #pragma endregion

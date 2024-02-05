@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "Gizmos.h"
 
-enum ShapeType { PLANE = 0, SPHERE, SHAPE_COUNT };
+enum ShapeType { PLANE = 0, SPHERE, BOX, SHAPE_COUNT };
 class PhysicsObject
 {
 protected:
