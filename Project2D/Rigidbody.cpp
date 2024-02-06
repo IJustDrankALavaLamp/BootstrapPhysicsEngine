@@ -34,10 +34,11 @@ void Rigidbody::FixedUpdate(glm::vec2 gravity, float timeStep)
 }
 
 #pragma region Forces
-void Rigidbody::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* collisionNormal) {
+void Rigidbody::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* collisionNormal, float pen) {
 	glm::vec2 normal = glm::normalize(collisionNormal ? *collisionNormal : other->getPosition() - m_position); // the normal of the plane the collision occurs on
 	
 	glm::vec2 perp(normal.y, -normal.x); //the vector perpendicular to the collision normal
+
 
 	// get the total velocity of the contact points for both objects
 	// Linear (l), Rotational(r)
@@ -50,12 +51,16 @@ void Rigidbody::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2*
 		// effective mass at contact point
 		float mass1 = 1.0f / (1.0f / m_mass + (r1*r2) / m_moment);
 		float mass2 = 1.0f / (1.0f / other->m_mass + (r1 * r2) / other->m_moment);
+
 		float elasticity = (getElasticity() + other->getElasticity() / 2.0f);
 
-		glm::vec2 force = (1.0f+elasticity)*mass1*mass2 /(mass1 + mass2) *(v1-v2) * normal;
+		glm::vec2 force = elasticity *mass1*mass2 /(mass1 + mass2) *(v1-v2) * normal;
 		applyForce(-force, contact - m_position);
 		other->applyForce(force, contact - other->m_position);
 	}
+	if (pen > 0)
+		PhysicsScene::ApplyContactForces(this, other, normal, pen);
+
 }
 
 void Rigidbody::applyForce(glm::vec2 force, glm::vec2 pos)

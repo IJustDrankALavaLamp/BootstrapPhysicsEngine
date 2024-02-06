@@ -58,7 +58,7 @@ void Plane::resolveCollision(Rigidbody* other, vec2 contact)
 
 	float r = dot(localContact, vec2(m_normal.y, -m_normal.x));
 	float mass0 = 1.0f / (1.0f / other->getMass() + (r * r) / other->getMoment());
-	float j = -(1 + e) * velIntoPlane * mass0;
+	float j = -(1+e) * velIntoPlane * mass0;
 
 	vec2 force = m_normal * j;
 	float preKE = other->getKineticEnergy();

@@ -1,5 +1,6 @@
 #pragma once
 #include "PhysicsObject.h"
+#include "PhysicsScene.h"
 #include <iostream>
 
 class Rigidbody : public PhysicsObject
@@ -12,9 +13,10 @@ public:
 	void applyForce(glm::vec2 force, glm::vec2 pos);
 	void applyForceToOther(Rigidbody* other, glm::vec2 force, glm::vec2 pos);
 
-	void resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
+	void resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* collisionNormal = nullptr, float pen = 0);
 
-#pragma region Getters
+#pragma region Getters/Setters
+	// Getters -------------
 	vec2 getPosition() { return m_position; }
 	float getOrientation() { return m_orientation; }
 	vec2 getVelocity() { return m_velocity; }
@@ -23,6 +25,9 @@ public:
 	float getMoment() { return m_moment; }
 	float getKineticEnergy();
 	float getElasticity() { return m_elasticity; }
+	// Setters ----------
+	void setPosition(vec2 newPos) { m_position = newPos; }
+
 #pragma endregion
 	void Stop() { m_velocity = { 0,0 }; }
 

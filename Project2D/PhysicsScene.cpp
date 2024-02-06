@@ -90,14 +90,12 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 	Sphere* sphere2 = dynamic_cast<Sphere*>(obj2);
 
 	if (sphere1 != nullptr && sphere2 != nullptr) { // double check if both items worked
-		float requiredDistance = sphere1->getRadius() + sphere2->getRadius(); // the minimum distance between to not collide
-		float xDist = fabsf(sphere1->getPosition().x - sphere2->getPosition().x);
-		float yDist = fabsf(sphere1->getPosition().y - sphere2->getPosition().y);
-
-		float distance = sqrtf(powf(xDist, 2) + powf(yDist, 2));
+		float dist = length(sphere1->getPosition() - sphere2->getPosition());
 		
-		if (distance <= requiredDistance) {
-			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
+		float penetration = sphere1->getRadius() + sphere2->getRadius() - dist;
+
+		if (penetration > 0) {
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()), nullptr ,penetration);
 			return true;
 		}
 	}
@@ -256,5 +254,15 @@ bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
 }
 
 #pragma endregion
+
+void PhysicsScene::ApplyContactForces(Rigidbody* body1, Rigidbody* body2, vec2 norm, float pen)
+{
+	float body2Mass = body2 ? body2->getMass() : INT_MAX;
+	float body1Factor = body2Mass / (body1->getMass() + body2Mass);
+
+	body1->setPosition(body1->getPosition() - body1Factor * norm * pen);
+	if (body2)
+		body2->setPosition(body2->getPosition() + (1 - body1Factor) * norm * pen);
+}
 
 #pragma endregion
