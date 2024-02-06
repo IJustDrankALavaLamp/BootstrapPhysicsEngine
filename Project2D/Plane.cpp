@@ -66,5 +66,5 @@ void Plane::resolveCollision(Rigidbody* other, vec2 contact)
 
 	float finalKE = postKE - preKE;
 	if (finalKE > postKE * 0.01f)
-		std::cout << "Kinetic Energy lost" << std::endl;
+		std::cout << "Kinetic Energy change from " << preKE * 0.01f << " to " << postKE * 0.01f << std::endl;
 }

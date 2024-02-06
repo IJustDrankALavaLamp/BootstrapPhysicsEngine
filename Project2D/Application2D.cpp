@@ -20,29 +20,37 @@ bool Application2D::startup() {
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 	
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0,-9.81));
+	m_physicsScene->setGravity(glm::vec2(0,-9.81f));
 	m_physicsScene->setTimeStep(0.01f);
 	// initialize objects
-	Sphere* ball1 = new Sphere(glm::vec2(-40, 10), glm::vec2(-15, 0), 3.0f, 5, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(40, 10), glm::vec2(-15, 0), 3.0f, 5, glm::vec4(0, 0, 1, 1));
-	Sphere* ball3 = new Sphere(glm::vec2(0, 10), glm::vec2(0, 0), 3.0f, 5, glm::vec4(0, 1, 1, 1));
+	//Sphere* ball1 = new Sphere(glm::vec2(-40, 10), glm::vec2(-15, 0), 3.0f, 5, glm::vec4(1, 0, 0, 1));
+	//Sphere* ball2 = new Sphere(glm::vec2(40, 10), glm::vec2(-15, 0), 3.0f, 5, glm::vec4(0, 0, 1, 1));
+	//Sphere* ball3 = new Sphere(glm::vec2(0, 10), glm::vec2(0, 0), 3.0f, 5, glm::vec4(0, 1, 1, 1));
 
-	Plane* plane = new Plane(glm::vec2(0,1), -30);
-	Plane* plane2 = new Plane(glm::vec2(5, 1), -50);
-	Plane* plane3 = new Plane(glm::vec2(-5, 1), -50);
+	Box* box = new Box(glm::vec2(-25, 5), glm::vec2(50, 10), glm::vec2(5, 5), 2, 3.0f, glm::vec4(1, 1, 0, 1));
+	Box* box2 = new Box(glm::vec2(0, 5), glm::vec2(10, 10), glm::vec2(5, 5), 2, 3.0f, glm::vec4(1, 0.5, 0, 1));
+	Box* box3 = new Box(glm::vec2(25, 5), glm::vec2(25, -15), glm::vec2(5, 5), 2, 3.0f, glm::vec4(1, 0, 1, 1));
 
-	Box* box = new Box(glm::vec2(10, 5), glm::vec2(50,10), glm::vec2(5, 5), 2, 3.0f, glm::vec4(1,1,0,1));
+	Plane* plane = new Plane(glm::vec2(0,1), -40);
+	Plane* plane2 = new Plane(glm::vec2(30, 1), -60);
+	Plane* plane3 = new Plane(glm::vec2(-30, 1), -60);
+	Plane* plane4 = new Plane(vec2(0, -1), -40);
 
 	// add objects to scene
-	m_physicsScene->addPhysicsObject(ball1);
-	m_physicsScene->addPhysicsObject(ball2);
-	m_physicsScene->addPhysicsObject(ball3);
+	//m_physicsScene->addPhysicsObject(ball1);
+	//m_physicsScene->addPhysicsObject(ball2);
+	//m_physicsScene->addPhysicsObject(ball3);
+
+	m_physicsScene->addPhysicsObject(box);
+	m_physicsScene->addPhysicsObject(box2);
+	m_physicsScene->addPhysicsObject(box3);
 
 	m_physicsScene->addPhysicsObject(plane);
 	m_physicsScene->addPhysicsObject(plane2);
 	m_physicsScene->addPhysicsObject(plane3);
+	m_physicsScene->addPhysicsObject(plane4);
 
-	m_physicsScene->addPhysicsObject(box);
+
 
 	return true;
 }

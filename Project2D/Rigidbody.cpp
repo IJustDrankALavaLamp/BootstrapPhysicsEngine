@@ -62,8 +62,6 @@ void Rigidbody::applyForceToOther(Rigidbody* other, glm::vec2 force, glm::vec2 p
 #pragma endregion
 #pragma region KineticEnergy
 float Rigidbody::getKineticEnergy() {
-	float velocityTotal = sqrtf(powf(m_velocity.x, 2) + powf(m_velocity.y, 2));
-	float energy = (m_mass * 0.5) * powf(velocityTotal, 2);
-	return energy;
+	return 0.05f * (m_mass * dot(m_velocity, m_velocity) + m_moment * m_angularVelocity * m_angularVelocity);
 }
 #pragma endregion

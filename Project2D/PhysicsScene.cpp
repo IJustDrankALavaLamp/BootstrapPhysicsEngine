@@ -192,19 +192,63 @@ bool PhysicsScene::plane2Box(PhysicsObject* planeObj, PhysicsObject* boxObj) {
 }
 #pragma endregion
 #pragma region BoxCollisions
-bool PhysicsScene::box2Box(PhysicsObject* box1, PhysicsObject* box2) {
-
+bool PhysicsScene::box2Box(PhysicsObject* boxObj1, PhysicsObject* boxObj2) {
+	Box* box1 = dynamic_cast<Box*>(boxObj1);
+	Box* box2 = dynamic_cast<Box*>(boxObj2);
+	if (box1 != nullptr && box2 != nullptr) {
+		vec2 boxPos = box2->getPosition() - box1->getPosition();
+		vec2 norm(0, 0);
+		vec2 contact(0, 0);
+		float pen = 0;
+		int numContacts = 0;
+		box1->BoxCornerCheck(*box2, contact, numContacts, pen, norm);
+		if (box2->BoxCornerCheck(*box1, contact, numContacts, pen, norm)) 
+			norm = -norm;
+		if (pen > 0)
+			box1->resolveCollision(box2, contact / float(numContacts), &norm);
+		return true;
+	}
 	return false;
 }
-bool PhysicsScene::box2Sphere(PhysicsObject* box, PhysicsObject* sphere) {
+bool PhysicsScene::box2Sphere(PhysicsObject* boxObj, PhysicsObject* sphereObj) {
 
-	Box* box = dynamic_cast<Box*>(box);
-	Sphere* sphere = dynamic_cast<Sphere*>(sphere);
+	Box* box = dynamic_cast<Box*>(boxObj);
+	Sphere* sphere = dynamic_cast<Sphere*>(sphereObj);
 
 	if (box != nullptr && sphere != nullptr) {
+		// circles position relative to box space
+		vec2 circleWorldPos = sphere->getPosition() - box->getPosition();
+		vec2 circleBoxPos = vec2(dot(circleWorldPos, box->getLocalX()), dot(circleWorldPos, box->getLocalY()));
+
+		// find closest point to the circle centre
+		vec2 closestPointBox = circleBoxPos;
+		vec2 extents = box->getExtents();
+
+		if (closestPointBox.x < -extents.x)
+			closestPointBox.x = -extents.x;
+
+		if (closestPointBox.x > extents.x)
+			closestPointBox.x = extents.x;
+
+		if (closestPointBox.y < -extents.y)
+			closestPointBox.y = -extents.y;
+
+		if (closestPointBox.y > extents.y)
+			closestPointBox.y = extents.y;
+
+		vec2 closestPointWorld = box->getPosition() + closestPointBox.x * box->getLocalX() + closestPointBox.y * box->getLocalY();
+		vec2 circleToBox = sphere->getPosition() - closestPointWorld;
+	
+		if (length(circleToBox) < sphere->getRadius()) {
+			vec2 direction = normalize(circleToBox);
+			vec2 contact = closestPointBox;
+
+			box->resolveCollision(sphere, contact, &direction);
+		}
 
 	}
 
+	return false;
 }
 bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
 	return plane2Box(planeObj, boxObj);

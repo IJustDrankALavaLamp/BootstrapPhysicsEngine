@@ -40,6 +40,8 @@ public:
 	static bool box2Sphere(PhysicsObject*, PhysicsObject*);
 	static bool box2Plane(PhysicsObject*, PhysicsObject*);
 
+
+
 protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;

@@ -20,6 +20,9 @@ public:
 	glm::vec2 getLocalX() { return m_localX; }
 	glm::vec2 getLocalY() { return m_localY; }
 #pragma endregion
+
 	void FixedUpdate(glm::vec2 gravity, float timeStep);
 	void Draw();
+
+	bool BoxCornerCheck(const Box& box, vec2& contact, int& numContacts, float& pen, vec2& edgeNormal);
 };
