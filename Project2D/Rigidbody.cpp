@@ -9,6 +9,7 @@ Rigidbody::Rigidbody(ShapeType shapeId, glm::vec2 position, glm::vec2 velocity, 
 	m_angularVelocity = 0;
 	m_mass = mass;
 	m_moment = 0;
+	m_elasticity = 1;
 }
 
 Rigidbody::~Rigidbody()
@@ -18,10 +19,18 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
-	m_position += m_velocity * timeStep;
-	applyForce(gravity * m_mass * timeStep, glm::vec2(0, 0));
+	m_velocity -= m_velocity * m_linearDrag * timeStep;
+	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
+	if (length(m_velocity) < minLinearThreshold) {
+		m_velocity = vec2(0, 0);
+	}
+	if (abs(m_angularVelocity) < minAngularThreshold) {
+		m_angularVelocity = 0;
+	}
 
 	m_orientation += m_angularVelocity * timeStep;
+	m_position += m_velocity * timeStep;
+	applyForce(gravity * m_mass * timeStep, glm::vec2(0, 0));
 }
 
 #pragma region Forces
@@ -41,10 +50,10 @@ void Rigidbody::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2*
 		// effective mass at contact point
 		float mass1 = 1.0f / (1.0f / m_mass + (r1*r2) / m_moment);
 		float mass2 = 1.0f / (1.0f / other->m_mass + (r1 * r2) / other->m_moment);
-		float elasticity = 1;
+		float elasticity = (getElasticity() + other->getElasticity() / 2.0f);
 
 		glm::vec2 force = (1.0f+elasticity)*mass1*mass2 /(mass1 + mass2) *(v1-v2) * normal;
-		applyForce(-force, contact);
+		applyForce(-force, contact - m_position);
 		other->applyForce(force, contact - other->m_position);
 	}
 }

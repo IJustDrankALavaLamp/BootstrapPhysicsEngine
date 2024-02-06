@@ -1,6 +1,7 @@
 #pragma once
 #include "PhysicsObject.h"
 #include <iostream>
+
 class Rigidbody : public PhysicsObject
 {
 public:
@@ -20,10 +21,12 @@ public:
 	float getAngularVel() { return m_angularVelocity; };
 	float getMass() { return m_mass; }
 	float getMoment() { return m_moment; }
+	float getKineticEnergy();
+	float getElasticity() { return m_elasticity; }
 #pragma endregion
 	void Stop() { m_velocity = { 0,0 }; }
 
-	float getKineticEnergy();
+
 protected:
 	vec2 m_position;
 	vec2 m_velocity;
@@ -31,5 +34,11 @@ protected:
 	float m_orientation; // 2D so only need rotation on one angle
 	float m_angularVelocity;
 	float m_moment;
+	float m_linearDrag = 0.03f;
+	float m_angularDrag = 0.03f;
+	float m_elasticity;
+	// statics
+	const float minLinearThreshold = 0.01f;
+	const float minAngularThreshold = 0.05f;
 };
 

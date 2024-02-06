@@ -6,6 +6,8 @@ Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius,
 	m_radius = radius;
 	m_colour = colour;
 
+	m_elasticity = 0.8f;
+
 	m_moment = 0.05f * mass * radius * radius;
 }
 

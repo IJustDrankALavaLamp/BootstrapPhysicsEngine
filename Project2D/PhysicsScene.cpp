@@ -195,7 +195,8 @@ bool PhysicsScene::plane2Box(PhysicsObject* planeObj, PhysicsObject* boxObj) {
 bool PhysicsScene::box2Box(PhysicsObject* boxObj1, PhysicsObject* boxObj2) {
 	Box* box1 = dynamic_cast<Box*>(boxObj1);
 	Box* box2 = dynamic_cast<Box*>(boxObj2);
-	if (box1 != nullptr && box2 != nullptr) {
+	if (box1 != nullptr && box2 != nullptr) 
+	{
 		vec2 boxPos = box2->getPosition() - box1->getPosition();
 		vec2 norm(0, 0);
 		vec2 contact(0, 0);

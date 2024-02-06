@@ -9,7 +9,10 @@ Box::Box(glm::vec2 pos, glm::vec2 velocity, glm::vec2 extents, float orientation
 	m_extents = extents;
 	m_colour = colour;
 
+	m_elasticity = 0.5f;
+
 	m_moment = 1.0f / 12.0f * mass * getWidth() * getHeight();
+	m_moment *= 10.0f;
 }
 
 void Box::FixedUpdate(glm::vec2 gravity, float timeStep)
@@ -24,13 +27,18 @@ void Box::FixedUpdate(glm::vec2 gravity, float timeStep)
 }
 
 void Box::Draw() {
-	glm::vec2 p1 = m_position - m_localX * m_extents.x - m_localY * m_extents.y; // top left?
-	glm::vec2 p2 = m_position + m_localX * m_extents.x - m_localY * m_extents.y; // top right?
-	glm::vec2 p3 = m_position - m_localX * m_extents.x + m_localY * m_extents.y; // bottom left
-	glm::vec2 p4 = m_position + m_localX * m_extents.x + m_localY * m_extents.y; // bottom right
+	glm::vec2 p1 = m_position - m_localX * m_extents.x - m_localY * m_extents.y; // bottom left
+	glm::vec2 p2 = m_position + m_localX * m_extents.x - m_localY * m_extents.y; // bottom right
+	glm::vec2 p3 = m_position - m_localX * m_extents.x + m_localY * m_extents.y; // top left
+	glm::vec2 p4 = m_position + m_localX * m_extents.x + m_localY * m_extents.y; // top right
 
 	aie::Gizmos::add2DTri(p1,p2,p4, m_colour);
 	aie::Gizmos::add2DTri(p1, p4, p3, m_colour);
+
+	aie::Gizmos::add2DCircle(p1, 1, 100, vec4(1, 1, 1, 1)); // white
+	aie::Gizmos::add2DCircle(p2, 1, 100, vec4(0, 1, 1, 1)); // yellow
+	aie::Gizmos::add2DCircle(p3, 1, 100, vec4(1, 0, 1, 1)); // pink
+	aie::Gizmos::add2DCircle(p4, 1, 100, vec4(1, 1, 0, 1)); // cyan
 }
 /// <summary>
 /// check if another box is touching this
@@ -73,7 +81,7 @@ bool Box::BoxCornerCheck(const Box& box, vec2& contact, int& numContacts, float&
 			first = false;
 		}
 	}
-	if(maxX <= m_extents.x || minX >= m_extents.x || maxY <= -m_extents.y || minY >= m_extents.y)
+	if(maxX <= -m_extents.x || minX >= m_extents.x || maxY <= -m_extents.y || minY >= m_extents.y)
 		return false;
 
 	if (numLocalContacts == 0)
@@ -85,15 +93,15 @@ bool Box::BoxCornerCheck(const Box& box, vec2& contact, int& numContacts, float&
 
 	float pen0 = m_extents.x - minX;
 	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
-		edgeNormal = m_localY;
+		edgeNormal = m_localX;
 		pen = pen0;
 		res = true;
 	}
 
-	pen0 > maxX + m_extents.x;
+	pen0 = maxX + m_extents.x;
 	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
 		edgeNormal = -m_localX;
-			pen = pen0;
+		pen = pen0;
 		res = true;
 	}
 	pen0 = m_extents.y - minY;
