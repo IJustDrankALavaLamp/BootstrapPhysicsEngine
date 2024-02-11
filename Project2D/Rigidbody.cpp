@@ -1,4 +1,6 @@
 #include "Rigidbody.h"
+
+
 #pragma region
 Rigidbody::Rigidbody(ShapeType shapeId, glm::vec2 position, glm::vec2 velocity, float orientation, float mass) 
 	: PhysicsObject(shapeId)

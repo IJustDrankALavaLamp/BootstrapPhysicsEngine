@@ -1,10 +1,11 @@
 #include "Plane.h"
+#include "Rigidbody.h"
 
 Plane::Plane(glm::vec2 normal, float dTT) : PhysicsObject(ShapeType::PLANE){
 	m_distanceToOrigin = dTT;
 	m_normal = glm::normalize(normal);
 	m_colour = vec4(1, 1, 1, 1);
-	m_elasticity = 1;
+	m_elasticity = .9f;
 }
 
 Plane::Plane(glm::vec2 normal, float distance, glm::vec4 colour) : PhysicsObject(ShapeType::PLANE)
@@ -12,6 +13,7 @@ Plane::Plane(glm::vec2 normal, float distance, glm::vec4 colour) : PhysicsObject
 	m_normal = normal;
 	m_distanceToOrigin = distance;
 	m_colour = colour;
+	m_elasticity = .9f;
 }
 
 Plane::~Plane()
@@ -51,7 +53,7 @@ void Plane::resolveCollision(Rigidbody* other, vec2 contact)
 	// the plane has no velocity
 	vec2 relVel = other->getVelocity() + other->getAngularVel() * vec2(-localContact.y, localContact.x); // the difference between velocity
 	float velIntoPlane = dot(relVel, m_normal);
-	float e = (getElasticity() + other->getElasticity());
+	float e = (getElasticity() + other->getElasticity()) / 2.0f;
 	if (dot(m_normal, relVel) >= 0)
 		return;
 
@@ -68,4 +70,7 @@ void Plane::resolveCollision(Rigidbody* other, vec2 contact)
 	float finalKE = postKE - preKE;
 	if (finalKE > postKE * 0.01f)
 		std::cout << "Kinetic Energy change from " << preKE * 0.01f << " to " << postKE * 0.01f << std::endl;
+
+	float pen = dot(contact, m_normal) - m_distanceToOrigin;
+	PhysicsScene::ApplyContactForces(other, nullptr, m_normal, pen);
 }

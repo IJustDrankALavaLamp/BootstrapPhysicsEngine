@@ -39,6 +39,9 @@
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MouseObj.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application2D.h">
@@ -50,9 +53,6 @@
     <ClInclude Include="PhysicsObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Rigidbody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -60,6 +60,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rigidbody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

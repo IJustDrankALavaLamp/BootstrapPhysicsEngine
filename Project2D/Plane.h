@@ -1,7 +1,8 @@
 #pragma once
 #include "PhysicsObject.h"
-#include "Rigidbody.h"
-#include "glm/glm.hpp"
+
+class Rigidbody;
+
 class Plane : public PhysicsObject
 {
 public:

@@ -174,6 +174,7 @@
     <ClCompile Include="Application2D.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MouseObj.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -183,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="Application2D.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="MouseObj.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="Plane.h" />

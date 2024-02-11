@@ -1,11 +1,17 @@
 #include "PhysicsScene.h"
+#include "Rigidbody.h"
+#include "PhysicsObject.h"
+#include "Plane.h"
+#include "Sphere.h"
+#include "Box.h"
 
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctions[] = {
-	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box,
-	PhysicsScene::sphere2Plane,	PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,
-	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box, PhysicsScene::plane2Mouse,
+	PhysicsScene::sphere2Plane,	PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,PhysicsScene::sphere2Mouse,
+	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box, PhysicsScene::box2Mouse,
+	PhysicsScene::mouse2Plane,PhysicsScene::mouse2Sphere,PhysicsScene::mouse2Box,PhysicsScene::mouse2Mouse,
 };
 
 #pragma region Constructors
@@ -53,9 +59,23 @@ void PhysicsScene::Draw() {
 	for (auto pObject : m_physicsObjects) {
 		pObject->Draw();
 	}
+	aie::Gizmos::add2DCircle(vec2(0,0), 1, 100, vec4(1,1,1,1));
 }
 #pragma endregion
 #pragma region CollisionHandling
+
+std::vector<Rigidbody*> PhysicsScene::getSpheres()
+{
+	std::vector<Rigidbody*> retVal;
+
+	for (auto pObj : m_physicsObjects) {
+		Rigidbody* cast = dynamic_cast<Rigidbody*>(pObj);
+		if (cast != nullptr && cast->getShapeID() == SPHERE)
+			retVal.push_back(cast);
+	}
+
+	return retVal;
+}
 
 void PhysicsScene::checkCollisions() {
 	// check for collisions
@@ -238,11 +258,13 @@ bool PhysicsScene::box2Sphere(PhysicsObject* boxObj, PhysicsObject* sphereObj) {
 		vec2 closestPointWorld = box->getPosition() + closestPointBox.x * box->getLocalX() + closestPointBox.y * box->getLocalY();
 		vec2 circleToBox = sphere->getPosition() - closestPointWorld;
 	
-		if (length(circleToBox) < sphere->getRadius()) {
-			vec2 direction = normalize(circleToBox);
-			vec2 contact = closestPointBox;
+		float penetration = sphere->getRadius() - length(circleToBox);
 
-			box->resolveCollision(sphere, contact, &direction);
+		if (penetration > 0) {
+			vec2 direction = normalize(circleToBox);
+			vec2 contact = closestPointWorld;
+
+			box->resolveCollision(sphere, contact, &direction, penetration);
 		}
 
 	}
@@ -254,8 +276,20 @@ bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
 }
 
 #pragma endregion
+#pragma region MouseCollisions
+bool PhysicsScene::mouse2Sphere(PhysicsObject* obj1, PhysicsObject* obj2) {
 
-void PhysicsScene::ApplyContactForces(Rigidbody* body1, Rigidbody* body2, vec2 norm, float pen)
+	return false;
+}
+bool PhysicsScene::mouse2Box(PhysicsObject* obj1, PhysicsObject* obj2) {
+
+	return false;
+}
+
+
+#pragma endregion
+
+void PhysicsScene::ApplyContactForces(Rigidbody* body1, Rigidbody* body2, glm:: vec2 norm, float pen)
 {
 	float body2Mass = body2 ? body2->getMass() : INT_MAX;
 	float body1Factor = body2Mass / (body1->getMass() + body2Mass);
