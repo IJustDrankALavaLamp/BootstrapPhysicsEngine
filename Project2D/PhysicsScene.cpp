@@ -4,6 +4,8 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Box.h"
+#include "MouseObj.h"
+#include "Input.h"
 
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
@@ -17,11 +19,13 @@ static fn collisionFunctions[] = {
 #pragma region Constructors
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
 {
+	m_mouse = new MouseObj();
 }
 PhysicsScene::~PhysicsScene() {
 	for (auto pObject : m_physicsObjects) {
 		delete pObject;
 	}
+	delete m_mouse;
 }
 #pragma endregion
 #pragma region Add/Remove Physics Objects
@@ -40,6 +44,7 @@ void PhysicsScene::removePhysicsObject(PhysicsObject* object) {
 #pragma endregion
 #pragma region Update/Draw
 void PhysicsScene::Update(float deltaTime) {
+	GatherInputs();
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += deltaTime;
 
@@ -52,14 +57,25 @@ void PhysicsScene::Update(float deltaTime) {
 
 		checkCollisions();
 	}
-
+}
+void PhysicsScene::GatherInputs() {
+	aie::Input* input = aie::Input::getInstance();
+	m_inputs = FrameInput();
+	m_inputs.LeftMouseDown = input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT);
+	HandleInputs();
+}
+void PhysicsScene::HandleInputs() {
+	if (m_inputs.LeftMouseDown)
+		m_mouse->Cutting = true;
+	else
+		m_mouse->Cutting = false;
 }
 
 void PhysicsScene::Draw() {
 	for (auto pObject : m_physicsObjects) {
 		pObject->Draw();
 	}
-	aie::Gizmos::add2DCircle(vec2(0,0), 1, 100, vec4(1,1,1,1));
+	m_mouse->Draw();
 }
 #pragma endregion
 #pragma region CollisionHandling
@@ -75,6 +91,12 @@ std::vector<Rigidbody*> PhysicsScene::getSpheres()
 	}
 
 	return retVal;
+}
+
+void PhysicsScene::setMousePos(glm::vec2 pos)
+{
+	if (m_mouse != nullptr) 
+		m_mouse->setPos(pos); 
 }
 
 void PhysicsScene::checkCollisions() {
@@ -93,6 +115,17 @@ void PhysicsScene::checkCollisions() {
 			if (collisionFunction != nullptr) { // if collision function points to an actual function
 				collisionFunction(object1, object2);
 			}
+		}
+	}
+	if (m_mouse->Cutting) {
+		for (int x = 0; x < objectcount; x++) {
+			PhysicsObject* obj = m_physicsObjects[x];
+
+			int id = obj->getShapeID();
+			int funcIdx = (id * SHAPE_COUNT) + MOUSE;
+			fn collisionFunc = collisionFunctions[funcIdx];
+			if (collisionFunc != nullptr)
+				collisionFunc(obj, m_mouse);
 		}
 	}
 }
@@ -278,10 +311,16 @@ bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
 #pragma endregion
 #pragma region MouseCollisions
 bool PhysicsScene::mouse2Sphere(PhysicsObject* obj1, PhysicsObject* obj2) {
+	MouseObj* mouse = dynamic_cast<MouseObj*>(obj1);
+	Sphere* sphere = dynamic_cast<Sphere*>(obj2);
+
 
 	return false;
 }
 bool PhysicsScene::mouse2Box(PhysicsObject* obj1, PhysicsObject* obj2) {
+	MouseObj* mouse = dynamic_cast<MouseObj*>(obj1);
+	Box* box = dynamic_cast<Box*>(obj2);
+
 
 	return false;
 }

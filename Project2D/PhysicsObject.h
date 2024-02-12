@@ -3,6 +3,7 @@
 #include "Gizmos.h"
 using namespace glm;
 enum ShapeType { PLANE = 0, SPHERE, BOX, MOUSE, SHAPE_COUNT };
+
 class PhysicsObject
 {
 protected:
@@ -16,6 +17,6 @@ public:
 	virtual int getShapeID() { return m_shapeID; }
 protected:
 	ShapeType m_shapeID;
-
+	
 };
 

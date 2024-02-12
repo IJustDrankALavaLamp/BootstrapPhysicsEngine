@@ -12,6 +12,7 @@ Rigidbody::Rigidbody(ShapeType shapeId, glm::vec2 position, glm::vec2 velocity, 
 	m_mass = mass;
 	m_moment = 0;
 	m_elasticity = 1;
+	m_isKinematic = false;
 }
 
 Rigidbody::~Rigidbody()
@@ -21,6 +22,11 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
+	if (isKinematic()) {
+		m_velocity = vec2(0);
+		m_angularVelocity = 0;
+		return;
+	}
 	m_velocity -= m_velocity * m_linearDrag * timeStep;
 	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
 	if (length(m_velocity) < minLinearThreshold) {

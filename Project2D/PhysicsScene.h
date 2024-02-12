@@ -5,6 +5,11 @@
 
 class PhysicsObject;
 class Rigidbody;
+class MouseObj;
+struct FrameInput {
+public:
+	bool LeftMouseDown = false;
+};
 
 class PhysicsScene
 {
@@ -17,6 +22,7 @@ public:
 
 	void Update(float deltaTime);
 	void Draw();
+	void GatherInputs(); void HandleInputs();
 
 #pragma region Getters/Setters
 	void setGravity(glm::vec2 gravity) { m_gravity = gravity; }
@@ -27,6 +33,8 @@ public:
 
 	std::vector<PhysicsObject*> getObjects() { return m_physicsObjects; }
 	std::vector<Rigidbody*> getSpheres();
+
+	void setMousePos(glm::vec2 pos);
 
 #pragma endregion
 	void checkCollisions();
@@ -57,6 +65,7 @@ protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
 	std::vector<PhysicsObject*> m_physicsObjects;
-	PhysicsObject* m_mouse;
+	MouseObj* m_mouse;
+	FrameInput m_inputs;
 };
 

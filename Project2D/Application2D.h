@@ -17,9 +17,12 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw();
 
+	virtual vec2 screen2World(vec2);
 protected:
 	PhysicsScene* m_physicsScene;
-	MouseObj* mouse;
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
+private:
+	const float extents = 100;
+	const float aspectRatio = 16.0f / 9.0f;
 };
