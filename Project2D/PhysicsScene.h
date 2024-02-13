@@ -42,7 +42,7 @@ public:
 	static bool sphere2Sphere(PhysicsObject*, PhysicsObject*);
 	static bool sphere2Plane(PhysicsObject*, PhysicsObject*);
 	static bool sphere2Box(PhysicsObject*, PhysicsObject*);
-	static bool sphere2Mouse(PhysicsObject* obj1, PhysicsObject* obj2) { return mouse2Sphere(obj1, obj2); }
+	static bool sphere2Mouse(PhysicsObject* obj1, PhysicsObject* obj2) { return mouse2Sphere(obj2, obj1); }
 
 	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
 	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);

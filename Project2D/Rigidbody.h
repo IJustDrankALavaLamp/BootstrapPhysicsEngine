@@ -20,17 +20,18 @@ public:
 	vec2 getPosition() { return m_position; }
 	float getOrientation() { return m_orientation; }
 	vec2 getVelocity() { return m_velocity; }
-	float getAngularVel() { return m_angularVelocity; };
+	float getAngularVel() { return m_angularVelocity; }
 	float getMass() { return isKinematic() ? INT_MAX : m_mass; }
 	float getMoment() { return isKinematic() ? INT_MAX : m_moment; }
 	float getKineticEnergy();
 	float getElasticity() { return m_elasticity; }
 	bool isKinematic() { return m_isKinematic; }
+	bool isInteractable() { return m_interactable; }
 
 	// Setters ----------
 	void setPosition(vec2 newPos) { m_position = newPos; }
 	void setKinematic(bool state) { m_isKinematic = state; }
-
+	void setInteractable(bool state) { m_interactable = state; }
 #pragma endregion
 	void Stop() { m_velocity = { 0,0 }; }
 
@@ -45,6 +46,7 @@ protected:
 	float m_linearDrag = 0.03f;
 	float m_angularDrag = 0.03f;
 	float m_elasticity;
+	bool m_interactable = true;
 	// statics
 	const float minLinearThreshold = 0.01f;
 	const float minAngularThreshold = 0.05f;

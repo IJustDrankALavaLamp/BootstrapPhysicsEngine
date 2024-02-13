@@ -19,7 +19,7 @@ static fn collisionFunctions[] = {
 #pragma region Constructors
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
 {
-	m_mouse = new MouseObj();
+	m_mouse = new MouseObj(this);
 }
 PhysicsScene::~PhysicsScene() {
 	for (auto pObject : m_physicsObjects) {
@@ -313,7 +313,17 @@ bool PhysicsScene::box2Plane(PhysicsObject* boxObj, PhysicsObject* planeObj) {
 bool PhysicsScene::mouse2Sphere(PhysicsObject* obj1, PhysicsObject* obj2) {
 	MouseObj* mouse = dynamic_cast<MouseObj*>(obj1);
 	Sphere* sphere = dynamic_cast<Sphere*>(obj2);
+		if (mouse != nullptr && sphere != nullptr) { // double check if both items worked
+			if (sphere->isInteractable()) {}
+			float dist = length(mouse->getPosition() - sphere->getPosition());
 
+			float penetration = mouse->getRadius() + sphere->getRadius() - dist;
+
+			if (penetration > 0) {
+				mouse->resolveCollision(sphere, 0.5f * (mouse->getPosition() + sphere->getPosition()));
+				return true;
+			}
+		}
 
 	return false;
 }

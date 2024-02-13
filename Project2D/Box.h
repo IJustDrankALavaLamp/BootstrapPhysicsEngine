@@ -19,6 +19,8 @@ public:
 
 	glm::vec2 getLocalX() { return m_localX; }
 	glm::vec2 getLocalY() { return m_localY; }
+
+	glm::vec4 getColour() { return m_colour; };
 #pragma endregion
 
 	void FixedUpdate(glm::vec2 gravity, float timeStep);

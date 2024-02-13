@@ -94,7 +94,7 @@ void Application2D::draw() {
 
 	aie::Gizmos::draw2D(glm::ortho<float>(-100, 100, -100/aspectRatio, 100/aspectRatio, -1.0f, 1.0f));
 
-	m_2dRenderer->drawText(m_font, "Press ESC to quit", 2, 15);
+	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 
 	// done drawing sprites
 	m_2dRenderer->end();
