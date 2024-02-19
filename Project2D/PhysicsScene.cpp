@@ -67,6 +67,10 @@ void PhysicsScene::Update(float deltaTime) {
 
 void PhysicsScene::SpawnObject() {
 	lastSpawn = Time;
+	vec2 Velocity;
+	vec2 Position;
+
+
 }
 
 void PhysicsScene::HandleInputs() {
