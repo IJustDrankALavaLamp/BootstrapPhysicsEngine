@@ -17,13 +17,12 @@ Application2D::~Application2D() {
 }
 
 bool Application2D::startup() {
-	
-	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 
 	m_2dRenderer = new aie::Renderer2D();
 
-	m_font = new aie::Font("./font/consolas.ttf", 32);
+	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
+	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->setGravity(glm::vec2(0,-9.81));
 	m_physicsScene->setTimeStep(0.01f);
@@ -50,7 +49,7 @@ bool Application2D::startup() {
 	//m_physicsScene->addPhysicsObject(box2);
 	//m_physicsScene->addPhysicsObject(box3);
 
-	m_physicsScene->addPhysicsObject(plane);
+	/*m_physicsScene->addPhysicsObject(plane);*/
 	m_physicsScene->addPhysicsObject(plane2);
 	m_physicsScene->addPhysicsObject(plane3);
 	m_physicsScene->addPhysicsObject(plane4);
@@ -76,7 +75,6 @@ void Application2D::update(float deltaTime) {
 
 	aie::Gizmos::clear();
 	m_physicsScene->Update(deltaTime);
-	m_physicsScene->Draw();
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -90,14 +88,18 @@ void Application2D::draw() {
 
 	// begin drawing sprites
 	m_2dRenderer->begin();
-	static float aspectRatio = 16 / 9.f;
 
-	aie::Gizmos::draw2D(glm::ortho<float>(-100, 100, -100/aspectRatio, 100/aspectRatio, -1.0f, 1.0f));
-
-	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
+	//draw physics objects
+	m_physicsScene->Draw();
+	aie::Gizmos::draw2D(glm::ortho<float>(-100, 100, -100 / aspectRatio, 100 / aspectRatio, -1.0f, 1.0f));
+	m_2dRenderer->setRenderColour(1, 1, 1, 1);
+	m_2dRenderer->drawText(m_font, "Press ESC to quit!", 0, 720 - 64);
 
 	// done drawing sprites
-	m_2dRenderer->end();
+	m_2dRenderer->end();	
+
+
+	
 }
 
 vec2 Application2D::screen2World(vec2 screenPos) {
@@ -113,3 +115,4 @@ vec2 Application2D::screen2World(vec2 screenPos) {
 
 	return worldPos;
 }
+

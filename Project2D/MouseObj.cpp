@@ -63,6 +63,8 @@ void MouseObj::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* 
 			return;
 			break;
 		}
+		parent->addScore(1 * parent->getMulti());
+		parent->addMulti(1);
 	}
 }
 

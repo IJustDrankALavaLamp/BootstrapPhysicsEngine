@@ -20,9 +20,12 @@ public:
 	void addPhysicsObject(PhysicsObject* object);
 	void removePhysicsObject(PhysicsObject* object);
 
+	void SpawnObject();
+	
+
 	void Update(float deltaTime);
 	void Draw();
-	void GatherInputs(); void HandleInputs();
+	void HandleInputs();
 
 #pragma region Getters/Setters
 	void setGravity(glm::vec2 gravity) { m_gravity = gravity; }
@@ -33,8 +36,12 @@ public:
 
 	std::vector<PhysicsObject*> getObjects() { return m_physicsObjects; }
 	std::vector<Rigidbody*> getSpheres();
-
+	
 	void setMousePos(glm::vec2 pos);
+
+	void addScore(float add) { score += add; }
+	void addMulti(float add) { multiplier += add; }
+	float getMulti() { return multiplier; }
 
 #pragma endregion
 	void checkCollisions();
@@ -65,7 +72,16 @@ protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
 	std::vector<PhysicsObject*> m_physicsObjects;
+	float multiplier = 1;
+	float score = 0;
+	float prevScore = 0;
+
 	MouseObj* m_mouse;
 	FrameInput m_inputs;
+
+	float Time = 0;
+	float lastSpawn = 0;
+	const float spawnPeriods = 3.f;
+
 };
 

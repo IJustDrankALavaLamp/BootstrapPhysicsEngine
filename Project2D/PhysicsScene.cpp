@@ -44,10 +44,10 @@ void PhysicsScene::removePhysicsObject(PhysicsObject* object) {
 #pragma endregion
 #pragma region Update/Draw
 void PhysicsScene::Update(float deltaTime) {
-	GatherInputs();
+	HandleInputs();
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += deltaTime;
-
+	Time += deltaTime;
 	// update each physics object a fixed amount of times each second
 	while (accumulatedTime >= m_timeStep) {
 		for (auto pObject : m_physicsObjects) {
@@ -57,18 +57,30 @@ void PhysicsScene::Update(float deltaTime) {
 
 		checkCollisions();
 	}
+	if (score != prevScore) {
+		std::cout << "Score: " << score << std::endl;
+		prevScore = score;
+	}
+	if (Time > lastSpawn + spawnPeriods)
+		SpawnObject();
 }
-void PhysicsScene::GatherInputs() {
+
+void PhysicsScene::SpawnObject() {
+	lastSpawn = Time;
+}
+
+void PhysicsScene::HandleInputs() {
 	aie::Input* input = aie::Input::getInstance();
 	m_inputs = FrameInput();
 	m_inputs.LeftMouseDown = input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT);
-	HandleInputs();
-}
-void PhysicsScene::HandleInputs() {
+
 	if (m_inputs.LeftMouseDown)
 		m_mouse->Cutting = true;
-	else
+	else {
 		m_mouse->Cutting = false;
+		multiplier = 1;
+	}
+		
 }
 
 void PhysicsScene::Draw() {
@@ -124,8 +136,9 @@ void PhysicsScene::checkCollisions() {
 			int id = obj->getShapeID();
 			int funcIdx = (id * SHAPE_COUNT) + MOUSE;
 			fn collisionFunc = collisionFunctions[funcIdx];
-			if (collisionFunc != nullptr)
+			if (collisionFunc != nullptr) {
 				collisionFunc(obj, m_mouse);
+			}
 		}
 	}
 }
