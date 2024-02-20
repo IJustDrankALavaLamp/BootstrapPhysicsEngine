@@ -40,6 +40,7 @@ public:
 	void setMousePos(glm::vec2 pos);
 
 	void addScore(float add) { score += add; }
+	int getScore() { return (int)score; }
 	void addMulti(float add) { multiplier += add; }
 	float getMulti() { return multiplier; }
 
@@ -59,7 +60,7 @@ public:
 	static bool box2Box(PhysicsObject*, PhysicsObject*);
 	static bool box2Sphere(PhysicsObject*, PhysicsObject*);
 	static bool box2Plane(PhysicsObject*, PhysicsObject*);
-	static bool box2Mouse(PhysicsObject* obj1, PhysicsObject* obj2) { return mouse2Box(obj1, obj2); }
+	static bool box2Mouse(PhysicsObject* obj1, PhysicsObject* obj2) { return mouse2Box(obj2, obj1); }
 
 	static bool mouse2Mouse(PhysicsObject*, PhysicsObject*) { return false; }
 	static bool mouse2Sphere(PhysicsObject*, PhysicsObject*);
@@ -84,4 +85,3 @@ protected:
 	const float spawnPeriods = 3.f;
 
 };
-

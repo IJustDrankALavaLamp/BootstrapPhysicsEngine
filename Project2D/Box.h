@@ -10,7 +10,7 @@ protected:
 	glm::vec2 m_localY;
 public:
 	Box(glm::vec2 pos, glm::vec2 velocity, glm::vec2 extents,float orientation, float mass, glm::vec4 colour);
-
+	Box(glm::vec2 pos, glm::vec2 velocity, glm::vec2 extents, float orientation, float mass, glm::vec4 colour, float AngularVel);
 #pragma region Getters
 	glm::vec2 getExtents() { return m_extents; }
 

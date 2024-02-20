@@ -12,7 +12,7 @@ public:
 	virtual void FixedUpdate(glm::vec2 gravity, float timeStep);
 	void applyForce(glm::vec2 force, glm::vec2 pos);
 	void applyForceToOther(Rigidbody* other, glm::vec2 force, glm::vec2 pos);
-
+	bool CheckDelete() { return (m_position.y <= -80); };
 	void resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* collisionNormal = nullptr, float pen = 0);
 
 #pragma region Getters/Setters

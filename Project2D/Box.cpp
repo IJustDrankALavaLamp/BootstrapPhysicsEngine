@@ -15,6 +15,22 @@ Box::Box(glm::vec2 pos, glm::vec2 velocity, glm::vec2 extents, float orientation
 	m_moment *= 10.0f;
 }
 
+Box::Box(glm::vec2 pos, glm::vec2 velocity, glm::vec2 extents, float orientation, float mass, glm::vec4 colour, float Angular)
+	: Rigidbody(BOX, pos, velocity, orientation, mass)
+{
+	m_localX = vec2(0, 0);
+	m_localY = vec2(0, 0);
+
+	m_extents = extents;
+	m_colour = colour;
+
+	m_elasticity = 0.5f;
+
+	m_moment = 1.0f / 12.0f * mass * getWidth() * getHeight();
+	m_moment *= 10.0f;
+	m_angularVelocity = Angular;
+}
+
 void Box::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	Rigidbody::FixedUpdate(gravity, timeStep);
@@ -36,9 +52,9 @@ void Box::Draw() {
 	aie::Gizmos::add2DTri(p1, p4, p3, m_colour);
 
 	aie::Gizmos::add2DCircle(p1, 1, 100, vec4(1, 1, 1, 1)); // white
-	aie::Gizmos::add2DCircle(p2, 1, 100, vec4(0, 1, 1, 1)); // yellow
-	aie::Gizmos::add2DCircle(p3, 1, 100, vec4(1, 0, 1, 1)); // pink
-	aie::Gizmos::add2DCircle(p4, 1, 100, vec4(1, 1, 0, 1)); // cyan
+	aie::Gizmos::add2DCircle(p2, 1, 100, vec4(1, 1, 1, 1));
+	aie::Gizmos::add2DCircle(p3, 1, 100, vec4(1, 1, 1, 1)); 
+	aie::Gizmos::add2DCircle(p4, 1, 100, vec4(1, 1, 1, 1)); 
 }
 /// <summary>
 /// check if another box is touching this

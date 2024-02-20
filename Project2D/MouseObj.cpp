@@ -38,8 +38,8 @@ void MouseObj::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* 
 				sphere->getMass() / 2, sphere->getRadius() * .75f, sphere->getColour());
 			newSphere->setInteractable(false);
 
-			Sphere* newSphere2 = new Sphere(vec2(sphere->getPosition().x - (radius * .75f), sphere->getPosition().y - (radius * .75f)), sphere->getVelocity() * 0.5f,
-				sphere->getMass() * 0.75f, sphere->getRadius() * 0.75f, sphere->getColour());
+			Sphere* newSphere2 = new Sphere(vec2(sphere->getPosition().x - (radius * .75f), sphere->getPosition().y - (radius * .75f)), sphere->getVelocity(),
+				sphere->getMass() * 2.0f, sphere->getRadius() * 0.75f, sphere->getColour());
 			newSphere2->setInteractable(false);
 
 			parent->addPhysicsObject(newSphere);
@@ -52,10 +52,29 @@ void MouseObj::resolveCollision(Rigidbody* other, glm::vec2 contact, glm::vec2* 
 		case BOX:
 		{
 			Box* box = dynamic_cast<Box*>(other);
+			Box* newBox = new Box(vec2(box->getPosition().x+2, box->getPosition().y+2), box->getVelocity(), 
+				box->getExtents() * 0.5f, box->getOrientation(), box->getMass(), box->getColour(), box->getAngularVel());
+			Box* newBox2 = new Box(vec2(box->getPosition().x-2, box->getPosition().y-2), box->getVelocity(),
+				box->getExtents() * 0.5f, box->getOrientation(), box->getMass(), box->getColour(), box->getAngularVel());
+			Box* newBox3 = new Box(vec2(box->getPosition().x-2, box->getPosition().y+2), box->getVelocity(),
+				box->getExtents() * 0.5f, box->getOrientation(), box->getMass(), box->getColour(), box->getAngularVel());
+			Box* newBox4 = new Box(vec2(box->getPosition().x+2, box->getPosition().y-2), box->getVelocity(),
+				box->getExtents() * 0.5f, box->getOrientation(), box->getMass(), box->getColour(), box->getAngularVel());
 
-			Box* newBox1 = new Box(box->getPosition(), box->getVelocity(), 
-				box->getExtents(), box->getOrientation(), box->getMass(), box->getColour());
+			newBox->setInteractable(false);
+			newBox2->setInteractable(false);
+			newBox3->setInteractable(false);
+			newBox4->setInteractable(false);
+			
+			parent->addPhysicsObject(newBox);
+			parent->addPhysicsObject(newBox2);
+			parent->addPhysicsObject(newBox3);
+			parent->addPhysicsObject(newBox4);
 
+			parent->removePhysicsObject(box);
+			delete box;
+
+			std::cout << "BoxCollisionSuccessful" << std::endl;
 		}
 		break;
 

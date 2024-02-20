@@ -52,6 +52,10 @@ void PhysicsScene::Update(float deltaTime) {
 	while (accumulatedTime >= m_timeStep) {
 		for (auto pObject : m_physicsObjects) {
 			pObject->FixedUpdate(m_gravity, m_timeStep);
+			if (pObject->CheckDelete()) {
+				removePhysicsObject(pObject);
+				delete pObject;
+			}
 		}
 		accumulatedTime -= m_timeStep;
 
@@ -66,11 +70,25 @@ void PhysicsScene::Update(float deltaTime) {
 }
 
 void PhysicsScene::SpawnObject() {
-	lastSpawn = Time;
-	vec2 Velocity;
-	vec2 Position;
+	for (int i = 0; i < 3; i++) {
+		lastSpawn = Time;
+		vec2 Velocity = vec2((-50 + rand() % 100), (20 + rand() % 80));
+		vec2 Position = vec2((-100 + rand() % 200), -60);
 
+		int randItem = rand() % 2 + 1;
 
+		if (randItem == 1) {
+			Sphere* newSphere = new Sphere(Position, Velocity, 0.5, 5, vec4(1, 0, 0, 1));
+			addPhysicsObject(newSphere);
+		}
+		else if (randItem == 2) {
+			Box* newBox = new Box(Position, Velocity, vec2(5, 5), 0, 1.0f, vec4(1, 0, 0, 1));
+			addPhysicsObject(newBox);
+		}
+		else {
+			std::cout << "wtf you broke it randItem == " << randItem << std::endl;
+		}
+	}
 }
 
 void PhysicsScene::HandleInputs() {
@@ -347,7 +365,40 @@ bool PhysicsScene::mouse2Sphere(PhysicsObject* obj1, PhysicsObject* obj2) {
 bool PhysicsScene::mouse2Box(PhysicsObject* obj1, PhysicsObject* obj2) {
 	MouseObj* mouse = dynamic_cast<MouseObj*>(obj1);
 	Box* box = dynamic_cast<Box*>(obj2);
+	if (box != nullptr && mouse != nullptr) {
+		// circles position relative to box space
+		vec2 circleWorldPos = mouse->getPosition() - box->getPosition();
+		vec2 circleBoxPos = vec2(dot(circleWorldPos, box->getLocalX()), dot(circleWorldPos, box->getLocalY()));
 
+		// find closest point to the circle centre
+		vec2 closestPointBox = circleBoxPos;
+		vec2 extents = box->getExtents();
+
+		if (closestPointBox.x < -extents.x)
+			closestPointBox.x = -extents.x;
+
+		if (closestPointBox.x > extents.x)
+			closestPointBox.x = extents.x;
+
+		if (closestPointBox.y < -extents.y)
+			closestPointBox.y = -extents.y;
+
+		if (closestPointBox.y > extents.y)
+			closestPointBox.y = extents.y;
+
+		vec2 closestPointWorld = box->getPosition() + closestPointBox.x * box->getLocalX() + closestPointBox.y * box->getLocalY();
+		vec2 circleToBox = mouse->getPosition() - closestPointWorld;
+
+		float penetration = mouse->getRadius() - length(circleToBox);
+
+		if (penetration > 0) {
+			vec2 direction = normalize(circleToBox);
+			vec2 contact = closestPointWorld;
+
+			mouse->resolveCollision(box, contact, &direction, penetration);
+		}
+
+	}
 
 	return false;
 }
